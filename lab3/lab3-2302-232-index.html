@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网上书店 - 2302班 学号后3位:232</title>
+    <link rel="stylesheet" href="css/lab3-2302-232-index.css">
+</head>
+<body>
+    <!-- 头部区域：固定定位 -->
+    <header class="header-fixed">
+        <div class="logo">
+            <img src="img/logo.png" alt="网站Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+            <div class="logo-text" style="display:none;">📚 网上书店</div>
+        </div>
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="#">首页</a></li>
+                <li><a href="#">图书分类</a></li>
+                <li><a href="#">畅销排行</a></li>
+                <li><a href="#">新书预告</a></li>
+                <li><a href="#">关于我们</a></li>
+            </ul>
+        </nav>
+        <div class="user-area">
+            <span id="user-info" style="display:none;">
+                欢迎，<strong id="current-username"></strong>
+                <a href="#" id="logout-btn">退出</a>
+            </span>
+            <button id="login-trigger" class="login-btn">登录 / 注册</button>
+        </div>
+    </header>
+
+    <!-- 占位，防止固定头部遮挡内容 -->
+    <div class="header-placeholder"></div>
+
+    <!-- ============================================
+         登录/注册对话框：父相子绝 + 显示与隐藏
+         ============================================ -->
+    <!-- 遮罩层：全屏固定定位 -->
+    <div id="login-mask" class="login-mask">
+        <!-- 对话框容器：父相子绝中的父元素（相对定位） -->
+        <div class="login-dialog">
+            <!-- 关闭按钮：绝对定位在右上角 -->
+            <span class="close-btn" id="close-dialog">&times;</span>
+            
+            <!-- 对话框标题 -->
+            <h2 class="dialog-title">📚 网上书店</h2>
+            
+            <!-- 登录表单 -->
+            <div id="login-form" class="form-box">
+                <h3>用户登录</h3>
+                <div class="input-group">
+                    <label for="login-username">用户名</label>
+                    <input type="text" id="login-username" placeholder="请输入用户名">
+                </div>
+                <div class="input-group">
+                    <label for="login-password">密码</label>
+                    <input type="password" id="login-password" placeholder="请输入密码">
+                </div>
+                <div class="error-msg" id="login-error"></div>
+                <button class="submit-btn" id="login-submit">登 录</button>
+                <div class="switch-box">
+                    还没有账号？<a href="#" id="to-register">立即注册</a>
+                </div>
+            </div>
+            
+            <!-- 注册表单：默认隐藏 -->
+            <div id="register-form" class="form-box" style="display:none;">
+                <h3>用户注册</h3>
+                <div class="input-group">
+                    <label for="reg-username">用户名</label>
+                    <input type="text" id="reg-username" placeholder="请输入用户名（3-20位字母数字）">
+                </div>
+                <div class="input-group">
+                    <label for="reg-password">密码</label>
+                    <input type="password" id="reg-password" placeholder="请输入密码（6位以上）">
+                </div>
+                <div class="input-group">
+                    <label for="reg-confirm">确认密码</label>
+                    <input type="password" id="reg-confirm" placeholder="请再次输入密码">
+                </div>
+                <div class="error-msg" id="reg-error"></div>
+                <button class="submit-btn" id="reg-submit">注 册</button>
+                <div class="switch-box">
+                    已有账号？<a href="#" id="to-login">立即登录</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主体内容区：浮动三栏布局 -->
+    <div class="main-container">
+        <!-- 左侧栏：图书分类导航（相对定位） -->
+        <aside class="left-sidebar">
+            <h3>图书分类导航</h3>
+            <ul class="category-list">
+                <li class="category-item">
+                    <a href="#">文学小说</a>
+                    <div class="sub-menu">
+                        <a href="#">当代小说</a>
+                        <a href="#">古典文学</a>
+                        <a href="#">外国文学</a>
+                    </div>
+                </li>
+                <li class="category-item">
+                    <a href="#">科技计算机</a>
+                    <div class="sub-menu">
+                        <a href="#">编程语言</a>
+                        <a href="#">人工智能</a>
+                        <a href="#">数据库</a>
+                    </div>
+                </li>
+                <li class="category-item">
+                    <a href="#">经济管理</a>
+                    <div class="sub-menu">
+                        <a href="#">市场营销</a>
+                        <a href="#">投资理财</a>
+                        <a href="#">企业管理</a>
+                    </div>
+                </li>
+                <li class="category-item">
+                    <a href="#">历史传记</a>
+                    <div class="sub-menu">
+                        <a href="#">中国历史</a>
+                        <a href="#">世界历史</a>
+                        <a href="#">人物传记</a>
+                    </div>
+                </li>
+                <li class="category-item">
+                    <a href="#">少儿读物</a>
+                    <div class="sub-menu">
+                        <a href="#">绘本</a>
+                        <a href="#">科普</a>
+                        <a href="#">童话</a>
+                    </div>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- 中间栏：图书展示区 -->
+        <main class="content-area">
+            <!-- 图书展示区：第一排第一列鼠标悬停效果，父相子绝 -->
+            <section class="book-showcase">
+                <h2>精选图书展示</h2>
+                <div class="book-grid">
+                    <!-- 第一排第一列：带有悬停效果的特殊图书卡片 -->
+                    <div class="book-card special-card">
+                        <div class="book-image">
+                            <img src="img/book1.webp" alt="JavaScript高级程序设计" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22200%22><rect width=%22150%22 height=%22200%22 fill=%22%234a90e2%22/><text x=%2275%22 y=%22100%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2214%22>JavaScript高级程序设计</text></svg>'">
+                            <!-- 绝对定位的悬停信息层 -->
+                            <div class="book-overlay">
+                                <h4>JavaScript高级程序设计</h4>
+                                <p>作者：Matt Frisbie</p>
+                                <p class="price">¥99.00</p>
+                                <button class="buy-btn">立即购买</button>
+                            </div>
+                        </div>
+                        <div class="book-info">
+                            <h4>JavaScript高级程序设计</h4>
+                            <p class="author">Matt Frisbie</p>
+                            <p class="price">¥99.00</p>
+                        </div>
+                    </div>
+
+                    <div class="book-card">
+                        <div class="book-image">
+                            <img src="img/book2.webp" alt="深入理解计算机系统" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22200%22><rect width=%22150%22 height=%22200%22 fill=%22%23e74c3c%22/><text x=%2275%22 y=%22100%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2214%22>深入理解计算机系统</text></svg>'">
+                        </div>
+                        <div class="book-info">
+                            <h4>深入理解计算机系统</h4>
+                            <p class="author">Randal E. Bryant</p>
+                            <p class="price">¥139.00</p>
+                        </div>
+                    </div>
+
+                    <div class="book-card">
+                        <div class="book-image">
+                            <img src="img/book3.webp" alt="算法导论" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22200%22><rect width=%22150%22 height=%22200%22 fill=%22%232ecc71%22/><text x=%2275%22 y=%22100%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2214%22>算法导论</text></svg>'">
+                        </div>
+                        <div class="book-info">
+                            <h4>算法导论</h4>
+                            <p class="author">Thomas H. Cormen</p>
+                            <p class="price">¥128.00</p>
+                        </div>
+                    </div>
+
+                    <div class="book-card">
+                        <div class="book-image">
+                            <img src="img/book4.webp" alt="设计模式" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22200%22><rect width=%22150%22 height=%22200%22 fill=%22%23f39c12%22/><text x=%2275%22 y=%22100%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2214%22>设计模式</text></svg>'">
+                        </div>
+                        <div class="book-info">
+                            <h4>设计模式</h4>
+                            <p class="author">Erich Gamma 等</p>
+                            <p class="price">¥89.00</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 热门推荐：浮动排列 -->
+            <section class="hot-recommend">
+                <h2>热门推荐</h2>
+                <div class="hot-books">
+                    <div class="hot-item">
+                        <img src="img/hot1.webp" alt="三体" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22140%22><rect width=%22100%22 height=%22140%22 fill=%22%239b59b6%22/><text x=%2250%22 y=%2270%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2212%22>三体</text></svg>'">
+                        <p>三体</p>
+                        <span class="hot-tag">热销</span>
+                    </div>
+                    <div class="hot-item">
+                        <img src="img/hot2.webp" alt="活着" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22140%22><rect width=%22100%22 height=%22140%22 fill=%22%231abc9c%22/><text x=%2250%22 y=%2270%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2212%22>活着</text></svg>'">
+                        <p>活着</p>
+                        <span class="hot-tag">好评</span>
+                    </div>
+                    <div class="hot-item">
+                        <img src="img/hot3.jpg" alt="百年孤独" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22140%22><rect width=%22100%22 height=%22140%22 fill=%22%23e67e22%22/><text x=%2250%22 y=%2270%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2212%22>百年孤独</text></svg>'">
+                        <p>百年孤独</p>
+                        <span class="hot-tag">经典</span>
+                    </div>
+                    <div class="hot-item">
+                        <img src="img/hot4.jpg" alt="人类简史" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22140%22><rect width=%22100%22 height=%22140%22 fill=%22%2334495e%22/><text x=%2250%22 y=%2270%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2212%22>人类简史</text></svg>'">
+                        <p>人类简史</p>
+                        <span class="hot-tag">畅销</span>
+                    </div>
+                    <div class="hot-item">
+                        <img src="img/hot5.jpg" alt="围城" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22140%22><rect width=%22100%22 height=%22140%22 fill=%22%23c0392b%22/><text x=%2250%22 y=%2270%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2212%22>围城</text></svg>'">
+                        <p>围城</p>
+                        <span class="hot-tag">推荐</span>
+                    </div>
+                    <div class="hot-item">
+                        <img src="img/hot6.webp" alt="红楼梦" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22140%22><rect width=%22100%22 height=%22140%22 fill=%22%238e44ad%22/><text x=%2250%22 y=%2270%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2212%22>红楼梦</text></svg>'">
+                        <p>红楼梦</p>
+                        <span class="hot-tag">名著</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 新书上市：Table布局 -->
+            <section class="new-books">
+                <h2>新书上市</h2>
+                <table class="book-table">
+                    <thead>
+                        <tr>
+                            <th>书名</th>
+                            <th>作者</th>
+                            <th>出版社</th>
+                            <th>出版日期</th>
+                            <th>价格</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Python编程：从入门到实践</td>
+                            <td>Eric Matthes</td>
+                            <td>人民邮电出版社</td>
+                            <td>2023-05</td>
+                            <td class="price">¥89.00</td>
+                            <td><a href="#" class="table-link">查看详情</a></td>
+                        </tr>
+                        <tr>
+                            <td>深度学习</td>
+                            <td>Ian Goodfellow</td>
+                            <td>清华大学出版社</td>
+                            <td>2023-03</td>
+                            <td class="price">¥168.00</td>
+                            <td><a href="#" class="table-link">查看详情</a></td>
+                        </tr>
+                        <tr>
+                            <td>Clean Code</td>
+                            <td>Robert C. Martin</td>
+                            <td>电子工业出版社</td>
+                            <td>2023-01</td>
+                            <td class="price">¥79.00</td>
+                            <td><a href="#" class="table-link">查看详情</a></td>
+                        </tr>
+                        <tr>
+                            <td>数据密集型应用系统设计</td>
+                            <td>Martin Kleppmann</td>
+                            <td>中国电力出版社</td>
+                            <td>2023-06</td>
+                            <td class="price">¥128.00</td>
+                            <td><a href="#" class="table-link">查看详情</a></td>
+                        </tr>
+                        <tr>
+                            <td>黑客与画家</td>
+                            <td>Paul Graham</td>
+                            <td>人民邮电出版社</td>
+                            <td>2023-04</td>
+                            <td class="price">¥59.00</td>
+                            <td><a href="#" class="table-link">查看详情</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+
+        <!-- 右侧栏：促销信息，固定定位 -->
+        <aside class="right-sidebar">
+            <div class="promo-box">
+                <h3>限时促销</h3>
+                <div class="promo-item">
+                    <span class="discount">5折</span>
+                    <p>计算机类图书全场优惠</p>
+                </div>
+                <div class="promo-item">
+                    <span class="discount">满减</span>
+                    <p>满200减50，满300减100</p>
+                </div>
+                <div class="promo-item">
+                    <span class="discount">包邮</span>
+                    <p>订单满99元免运费</p>
+                </div>
+                <div class="promo-item">
+                    <span class="discount">赠品</span>
+                    <p>购书赠精美书签</p>
+                </div>
+                <button class="promo-btn">立即抢购</button>
+            </div>
+            
+            <div class="promo-box hot-sale">
+                <h3>热销榜单</h3>
+                <ol class="hot-list">
+                    <li><span class="rank">1</span> JavaScript高级程序设计</li>
+                    <li><span class="rank">2</span> 深入理解计算机系统</li>
+                    <li><span class="rank">3</span> 算法导论</li>
+                    <li><span class="rank">4</span> 三体全集</li>
+                    <li><span class="rank">5</span> 活着</li>
+                </ol>
+            </div>
+        </aside>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <p> 网上书店 班级：2302 | 学号后3位：232 | 版权所有</p>
+    </footer>
+
+    <!-- ============================================
+         JavaScript：本地存储 + 登录注册逻辑
+         ============================================ -->
+    <script>
+        // ============================================
+        // 本地存储工具函数（基于HTML5 localStorage）
+        // ============================================
+        const Storage = {
+            // 获取所有用户
+            getUsers: function() {
+                const users = localStorage.getItem('bookstore_users');
+                return users ? JSON.parse(users) : {};
+            },
+            // 保存所有用户
+            saveUsers: function(users) {
+                localStorage.setItem('bookstore_users', JSON.stringify(users));
+            },
+            // 注册新用户
+            register: function(username, password) {
+                const users = this.getUsers();
+                if (users[username]) {
+                    return { success: false, msg: '用户名已存在' };
+                }
+                users[username] = { password: password, regTime: new Date().toLocaleString() };
+                this.saveUsers(users);
+                return { success: true, msg: '注册成功' };
+            },
+            // 登录验证
+            login: function(username, password) {
+                const users = this.getUsers();
+                if (!users[username]) {
+                    return { success: false, msg: '用户名不存在' };
+                }
+                if (users[username].password !== password) {
+                    return { success: false, msg: '密码错误' };
+                }
+                // 保存当前登录用户到sessionStorage（会话级存储）
+                sessionStorage.setItem('current_user', username);
+                return { success: true, msg: '登录成功' };
+            },
+            // 退出登录
+            logout: function() {
+                sessionStorage.removeItem('current_user');
+            },
+            // 获取当前登录用户
+            getCurrentUser: function() {
+                return sessionStorage.getItem('current_user');
+            }
+        };
+
+        // ============================================
+        // 页面元素获取
+        // ============================================
+        const loginMask = document.getElementById('login-mask');
+        const loginTrigger = document.getElementById('login-trigger');
+        const closeDialog = document.getElementById('close-dialog');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const toRegister = document.getElementById('to-register');
+        const toLogin = document.getElementById('to-login');
+        const userInfo = document.getElementById('user-info');
+        const currentUsername = document.getElementById('current-username');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // ============================================
+        // 显示/隐藏对话框（不使用跳转，用display属性）
+        // ============================================
+        function showDialog() {
+            loginMask.style.display = 'flex';
+            // 清空之前的错误信息和输入框
+            document.getElementById('login-error').textContent = '';
+            document.getElementById('reg-error').textContent = '';
+            document.getElementById('login-username').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('reg-username').value = '';
+            document.getElementById('reg-password').value = '';
+            document.getElementById('reg-confirm').value = '';
+        }
+
+        function hideDialog() {
+            loginMask.style.display = 'none';
+        }
+
+        // 切换登录/注册表单（显示与隐藏技术）
+        function showLoginForm() {
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            document.getElementById('login-error').textContent = '';
+        }
+
+        function showRegisterForm() {
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+            document.getElementById('reg-error').textContent = '';
+        }
+
+        // ============================================
+        // 更新登录状态显示
+        // ============================================
+        function updateUserStatus() {
+            const user = Storage.getCurrentUser();
+            if (user) {
+                loginTrigger.style.display = 'none';
+                userInfo.style.display = 'inline';
+                currentUsername.textContent = user;
+            } else {
+                loginTrigger.style.display = 'inline-block';
+                userInfo.style.display = 'none';
+            }
+        }
+
+        // ============================================
+        // 事件绑定
+        // ============================================
+        loginTrigger.addEventListener('click', showDialog);
+        closeDialog.addEventListener('click', hideDialog);
+        
+        // 点击遮罩层关闭对话框
+        loginMask.addEventListener('click', function(e) {
+            if (e.target === loginMask) {
+                hideDialog();
+            }
+        });
+
+        toRegister.addEventListener('click', function(e) {
+            e.preventDefault(); // 阻止超链接默认跳转
+            showRegisterForm();
+        });
+
+        toLogin.addEventListener('click', function(e) {
+            e.preventDefault(); // 阻止超链接默认跳转
+            showLoginForm();
+        });
+
+        // 登录提交
+        document.getElementById('login-submit').addEventListener('click', function() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const errorDiv = document.getElementById('login-error');
+
+            if (!username || !password) {
+                errorDiv.textContent = '请输入用户名和密码';
+                return;
+            }
+
+            const result = Storage.login(username, password);
+            if (result.success) {
+                errorDiv.textContent = '';
+                hideDialog();
+                updateUserStatus();
+                alert('登录成功！欢迎回来，' + username);
+            } else {
+                errorDiv.textContent = result.msg;
+            }
+        });
+
+        // 注册提交
+        document.getElementById('reg-submit').addEventListener('click', function() {
+            const username = document.getElementById('reg-username').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
+            const errorDiv = document.getElementById('reg-error');
+
+            // 表单验证
+            if (!username || !password || !confirm) {
+                errorDiv.textContent = '请填写所有字段';
+                return;
+            }
+            if (username.length < 3 || username.length > 20) {
+                errorDiv.textContent = '用户名长度应为3-20位';
+                return;
+            }
+            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                errorDiv.textContent = '用户名只能包含字母、数字和下划线';
+                return;
+            }
+            if (password.length < 6) {
+                errorDiv.textContent = '密码长度至少为6位';
+                return;
+            }
+            if (password !== confirm) {
+                errorDiv.textContent = '两次输入的密码不一致';
+                return;
+            }
+
+            const result = Storage.register(username, password);
+            if (result.success) {
+                errorDiv.textContent = '';
+                alert('注册成功！请登录');
+                showLoginForm();
+            } else {
+                errorDiv.textContent = result.msg;
+            }
+        });
+
+        // 退出登录
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            Storage.logout();
+            updateUserStatus();
+            alert('已退出登录');
+        });
+
+        // 页面加载时检查登录状态
+        window.addEventListener('load', updateUserStatus);
+
+        // 支持回车键提交
+        document.getElementById('login-password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('login-submit').click();
+            }
+        });
+        document.getElementById('reg-confirm').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('reg-submit').click();
+            }
+        });
+    </script>
+</body>
+</html>
